@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  eureka-demo:
+    image: eureka-demo:${VERSION}       # Replace with your built image name
+    ports:
+      - "8761:8761"                       # Expose to outside
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JAVA_OPTS: "-Xms128m -Xmx256m"
+    deploy:
+      mode: replicated
+      replicas: 1                         # Run 3 instances
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    networks:
+      - shared-overlay-net
+
+networks:
+  shared-overlay-net:
+    external: true   # <— use the pre-created shared overlay network
